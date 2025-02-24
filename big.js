@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 try {
-  const input = fs.readFileSync("/dev/stdin").toString().trim().split(" ");
+  const input = fs.readFileSync("input2.txt").toString().trim().split(" ");
 
   if (input.length !== 2) {
     throw new Error("입력값은 두 개의 숫자여야 합니다.");

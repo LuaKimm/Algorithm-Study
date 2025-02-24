@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOM 성능 비교 최적화</title>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script>
+      // 🔹 10,000개의 p 태그 생성
+      function createParagraphs() {
+        const container = document.getElementById("container");
+        for (let i = 0; i < 10000; i++) {
+          const p = document.createElement("p");
+          p.id = `p${i}`;
+          p.textContent = `Original ${i}`;
+          container.appendChild(p);
+        }
+      }
+
+      // ❌ (비효율적인 방법) 직접 DOM 요소를 하나씩 변경
+      function modifyDomDirectly() {
+        console.time("Direct DOM Manipulation");
+        for (let i = 0; i < 10000; i++) {
+          const p = document.getElementById(`p${i}`);
+          if (p) {
+            p.textContent = `Modified ${i}`;
+          }
+        }
+        console.timeEnd("Direct DOM Manipulation");
+      }
+
+      // ✅ (최적화된 방법) Document Fragment를 활용하되 기존 요소 유지
+      function modifyWithDocumentFragment() {
+        console.time("Document Fragment Optimization");
+        const container = document.getElementById("container");
+        const fragment = document.createDocumentFragment();
+
+        for (let i = 0; i < 10000; i++) {
+          const p = document.getElementById(`p${i}`);
+          if (p) {
+            p.textContent = `Modified ${i}`; // 기존 요소를 수정
+          }
+        }
+
+        console.timeEnd("Document Fragment Optimization");
+      }
+
+      // 실행 흐름
+      createParagraphs(); // 초기 HTML 요소 생성
+
+      setTimeout(() => {
+        modifyDomDirectly(); // 직접 변경 방식 실행
+        modifyWithDocumentFragment(); // Document Fragment 방식 실행
+      }, 1000);
+    </script>
+  </body>
+</html>

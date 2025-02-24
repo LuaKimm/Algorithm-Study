@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOM 성능 비교</title>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script>
+      // (최적화된 방법) innerHTML을 직접 변경
+      function modifyWithInnerHTML() {
+        console.time("innerHTML");
+        let content = "";
+        for (let i = 0; i < 10000; i++) {
+          content += `<p>Modified ${i}</p>`;
+        }
+        document.getElementById("container").innerHTML = content;
+        console.timeEnd("innerHTML");
+      }
+
+      // (비효율적인 방법) 직접 DOM 조작
+      function modifyWithDirectDOM() {
+        console.time("Direct DOM");
+        const container = document.getElementById("container");
+        for (let i = 0; i < 10000; i++) {
+          const p = document.createElement("p");
+          p.textContent = `Modified ${i}`;
+          container.appendChild(p);
+        }
+        console.timeEnd("Direct DOM");
+      }
+
+      // 실행 (1초 뒤 실행하여 비교)
+      setTimeout(() => {
+        modifyWithInnerHTML(); // innerHTML 방식 (빠름)
+        modifyWithDirectDOM(); // 직접 DOM 조작 (느림)
+      }, 1000);
+    </script>
+  </body>
+</html>
